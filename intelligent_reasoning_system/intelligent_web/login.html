@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="./img/favicon.ico">
+    <script src="js/vue.min.js"></script>
+    <script src="js/axios.min.js"></script>
+    <title>Login</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/login/bootstrap.min.css">
+    <link href="css/login/circular-std/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/login/style.css">
+    <link rel="stylesheet" href="css/login/fontawesome-all.css">
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            background: linear-gradient(to right, #224766, #020730);
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-align: center;
+            align-items: center;
+            padding-top: 40px;
+            padding-bottom: 40px;
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+    <!-- ============================================================== -->
+    <!-- login page  -->
+    <!-- ============================================================== -->
+    <div class="splash-container">
+        <div class="card ">
+            <div class="card-header text-center">
+                <a href="#"></a><img class="logo-img" src="img/index_logo.png" alt="logo" width="270" height="50"></a>
+                <span class="splash-description">Please enter your user information.</span>
+            </div>
+
+
+            <div class="card-body">
+                <form name="login" action="/user/loginIn" method="POST">
+                    <div class="form-group">
+                        <input class="form-control form-control-lg" name="username" type="text" placeholder="用户名"
+                            autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control form-control-lg" name="password" type="password" placeholder="密码">
+                    </div>
+                    <button class="btn btn-primary btn-lg btn-block" type="submit">Sign in</button>
+                </form>
+            </div>
+
+            <!-- <div id="app" class="card-body">
+                <div class="form-group">
+                    <input v-model="username" class="form-control form-control-lg" id="username" type="text" placeholder="用户名" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <input v-model="password" class="form-control form-control-lg" id="password" type="password" placeholder="密码">
+                </div>
+                <button @click="submit_1" class="btn btn-primary btn-lg btn-block">Sign in</button>
+            </div>
+            <script>
+                new Vue({
+                    el: '#app',
+                    data: {
+                        url: '/user/loginIn',
+                        username: '',
+                        password: ''
+                    },
+                    methods: {
+                        submit_1: function() {
+                            axios.post(this.url, {
+                                username: this.username,
+                                password: this.password
+                            }, {
+                                emulateJSON: true
+                            })
+                        }
+                    }
+                })
+            </script> -->
+        </div>
+    </div>
+
+
+</body>
+
+</html>

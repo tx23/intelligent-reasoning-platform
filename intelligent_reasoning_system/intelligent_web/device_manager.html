@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--<script src="https://how2j.cn/study/vue.min.js"></script>-->
+  <script src="./js/vue.min.js"></script>
+
+  <!-- <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>-->
+  <script src="./js/selfdownload/jquery.min.js"></script>
+  <!--<script src="https://how2j.cn/study/axios.min.js"></script>-->
+  <script src="./js/selfdownload/study/axios.min.js"></script>
+  <!-- 最新版本的 Bootstrap 核心 CSS 文件  href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"  -->
+  <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
+  <link rel="stylesheet" href="./js/bootstrap/3.3.7/dist/css/bootstarp.min.css">
+  <!-- 可选的 Bootstrap 主题文件（一般不用引入） href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css"-->
+  <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css"
+    integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">-->
+  <link rel="stylesheet" href="./js/bootstrap/3.3.7/dist/css/bootstrap-theme.min.css">
+  <!-- 最新的 Bootstrap 核心 JavaScript 文件 src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"-->
+  <script src="./js/bootstrap/3.3.7/dist/js/bootstrap.min.js"></script>
+
+  <link rel="stylesheet" href="css/performance.css">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>设备管理</title>
+  <link rel="shortcut icon" href="./img/favicon.ico">
+  <style type="text/css">
+    body {
+      background: linear-gradient(to right, #224766, #020730);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <nav class="navbar navbar-inverse " style="height: 80px;">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-3" margin-top:10px;><img class="second-slide" style="height: 80px;width: 130%;"
+                src="img/logo.svg"><br></div>
+            <div class="col-md-5"></div>
+            <div class="col-md-4" style="margin-top:15px;">
+              <div class="navbar-header">
+                <a class="navbar-brand" href="/user/jumpIndex">首 页</a>
+              </div>
+              <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                  <li><a href="/user/jumpPerformance">性能测试</a></li>
+                  <li><a href="/user/jumpRecord">记录查询</a></li>
+                  <li><a href="/user/jumpDevice">设备管理</a></li>
+                </ul>
+              </div>
+              <!--/.nav-collapse -->
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="title_row_1 name">
+          <h1 style="color: rgb(219, 219, 219); ">设备管理 </h1>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div id="op" class="row">
+      <div class="col-md-12">
+
+        <div id="box" class="panel panel-info">
+          <div class="panel-heading">对比设备</div>
+          <br />
+          <div class="panel-body">
+            <table class="table table-striped table-bordered table-hover table-condensed">
+              <thead>
+                <th>序号</th>
+                <th>设备ID</th>
+                <th>IP</th>
+                <th>设备类型</th>
+                <th>操作</th>
+              </thead>
+              <tbody v-for="(compare_item,index) in compare_list">
+                <tr>
+                  <td> ${index + 1} </td>
+                  <td> ${compare_item.id}</td>
+                  <td> ${compare_item.ip}</td>
+                  <td>
+                    <a href="#">${compare_item.devicename}</a>
+                  </td>
+                  <td>
+                    <button v-on:click="remove_device(compare_item.id)" type="button" class="btn btn-primary"
+                      style="width: 100%;">移除</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <br />
+
+          <div class="panel-heading">可用设备</div>
+          <br />
+          <div class="panel-body">
+            <table class="table table-striped table-bordered table-hover table-condensed">
+              <thead>
+                <th>序号</th>
+                <th>设备ID</th>
+                <th>IP</th>
+                <th>设备类型</th>
+                <th>操作</th>
+              </thead>
+              <tbody v-for="(available_item,index) in available_list">
+                <tr>
+                  <td> ${index + 1} </td>
+                  <td> ${available_item.id}</td>
+                  <td> ${available_item.ip}</td>
+                  <td>
+                    <a href="#">${available_item.devicename}</a>
+                  </td>
+                  <td>
+                    <button v-on:click="add_device(available_item.id)" type="button" class="btn btn-primary"
+                      style="width: 100%;">添加</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</body>
+<script>
+  new Vue({
+    delimiters: ['${', '}'],
+    el: '#op',
+    data: {
+      compare_list: [],
+      available_list: []
+    },
+    mounted() { //拉取初始化数据
+      axios({
+        method: 'post',
+        url: '/user/getDeviceData'
+      }).then(response => (this.compare_list = response.data.compare_list,
+        this.available_list = response.data.available_list))
+    },
+    methods: {
+      add_device(device_ip) {
+        axios.post('/user/applyDevice', {
+          data: device_ip
+        }, { emulateJSON: true })
+          .then(response => (this.compare_list = response.data.compare_list,
+            this.available_list = response.data.available_list))
+          .catch(function (error) { // 请求失败处理
+            console.log(error);
+          });
+      },
+      remove_device(device_ip) {
+        axios.post('/user/removeDevice', {
+          data: device_ip
+        }, { emulateJSON: true })
+          .then(response => (this.compare_list = response.data.compare_list,
+            this.available_list = response.data.available_list))
+          .catch(function (error) { // 请求失败处理
+            console.log(error);
+          });
+      },
+    }
+  })
+</script>

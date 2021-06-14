@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./js/selfdownload/jquery.min.js"></script>
+    <script src="./js/vue.min.js"></script>
+
+    <script src="./js/selfdownload/study/axios.min.js"></script>
+
+    <link rel="stylesheet" href="./js/bootstrap/3.3.7/dist/css/bootstarp.min.css">
+ 
+    <link rel="stylesheet" href="./js/bootstrap/3.3.7/dist/css/bootstrap-theme.min.css">
+    <script src="./js/bootstrap/3.3.7/dist/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="css/performance.css">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>性能测试</title>
+    <link rel="shortcut icon" href="./img/favicon.ico">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="navbar navbar-inverse " style="height: 80px;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-3" style="margin-top:5px;"><img class="second-slide"
+                                style="height: 80px;width: 130%;" src="img/logo.svg"><br></div>
+                        <div class="col-md-5"></div>
+                        <div class="col-md-4" style="margin-top:15px;">
+                            <div class="navbar-header">
+                                <a class="navbar-brand" href="/user/jumpIndex">首 页</a>
+                            </div>
+                            <div id="navbar" class="collapse navbar-collapse">
+                                <ul class="nav navbar-nav">
+                                    <li><a href="/user/jumpPerformance">性能测试</a></li>
+                                    <li><a href="/user/jumpRecord">记录查询</a></li>
+                                    <li><a href="/user/jumpDevice">设备管理</a></li>
+                                </ul>
+                            </div>
+                            <!--/.nav-collapse -->
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="title_row_1 name">
+                    <h1 style="color: rgb(230, 230, 230); ">性能测试查询 </h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="panel1" class="container">
+        <div class="row" >
+            <div class="col-md-3 col-sm-3 col-xs-3 col-lg-3" style="margin: 0% 0% 1% ">
+
+                <select class=" selectpicker"  id="algorithmSelection"  @change="postValue()" v-model="values"  style="width: 125px;height: 40px">
+                    <option selected="selected" hidden="hidden" >请选择模型</option>
+                    <option class="form-control" v-for="(item ,index) in algSelectedList" :value="`${ index+1 }`" style="text-align: center">${ item }</option>
+                </select>
+            </div>
+            <div class="col-md-9 col-sm-9 col-xs-9 col-lg-9" >
+
+                <button  @click="send" style="margin-left: 90%;height: 38px;"   class="btn btn-success">开始测试</button>
+            </div>
+        </div>
+        <!-- 模态窗，用户等待转圈圈 -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            backdrop="static" keyboard="false">
+            <div style="height: 40%;"> </div>
+            <div style="text-align: center;height: 55%; width: 100%; ">
+                <img style="margin: 0;" src="./img/20200708115358601.gif">
+                <br><br>
+                <p style="font-size: 30px; color: aliceblue;"> 测试中，请稍等 </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 ">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
+                                    aria-expanded="true" aria-controls="collapseOne" style="color: rgb(1, 16, 80);">
+                                    推理结果
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel"
+                            aria-labelledby="headingOne">
+                            <div class="panel-body">
+
+                                <table class="table table-striped table-bordered table-hover  table-condensed"
+                                    style=" margin: 2% 0% 3% 0%">
+                                    <thead>
+                                        <th>序号</th>
+                                        <th>模型</th>
+                                        <th>类型</th>
+                                        <th>推理时间</th>
+                                        <th>处理时间</th>
+                                        <th>Fps</th>
+                                        <th>功耗</th>
+<!--                                        <th>内存占有率</th>-->
+                                    </thead>
+                                    <tbody id="inferResultDetails">
+                                        <tr v-for="(item,index) in items">
+                                            <td>${index+1}</td>
+                                            <td>${item.ip}</td>
+                                            <td>${item.type}</td>
+                                            <td>${item.ptime}</td>
+                                            <td>${item.ctime}</td>
+                                            <td>${item.fps}</td>
+                                            <td>${item.powerwaste}</td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div>
+                    <!--获取历史记录，不再添加对应的图片功能-->
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingTwo">
+                            <h4 class="panel-title">
+                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion"
+                                   href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" @click="rereshHistory()">
+                                    历史记录
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                            <div id="box" class="panel panel-info">
+                                <div class="panel-body">
+                                    <table class="table table-striped table-bordered table-hover table-condensed">
+                                        <thead>
+                                        <th style="display: none">序号</th>
+                                        <th >模型</th>
+                                        <th >类型</th>
+                                        <th >推理时间</th>
+                                        <th >处理时间</th>
+                                        <th >Fps</th>
+                                        <th >功耗</th>
+<!--                                        <th style="text-align: center;vertical-align: middle">内存占有率</th>-->
+                                        </thead>
+                                        <tbody  v-for="(historyQuery,index) in historyList">
+                                        <tr v-if=" historyQuery.batch % 2 == 0 " >
+                                            <td style="display: none" >
+                                                <a data-toggle="modal" @click="inferDetails(index+1,historyQuery.id)"  >${historyQuery.id}</a>
+
+                                            </td>
+                                            <td style="background: #c4c7d0">
+
+                                                <a data-toggle="modal" @click="inferDetails(index+1,historyQuery.id)"  >${historyQuery.ip}</a>
+                                                <div   class="modal fade" :id="'myModal'+(index+1)">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+
+                                                            <!--<div class="modal-header">
+                                                                <h4 class="modal-title">详细历史记录</h4>
+                                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                            </div>-->
+
+                                                            <div class="modal-body">
+                                                                <h3>详细记录</h3>
+                                                                <table class="table table-striped table-bordered table-hover table-condensed">
+                                                                    <thead>
+                                                                    <th style="text-align: center;vertical-align: middle">序号</th>
+                                                                    <th style="text-align: center;vertical-align: middle">推理结果</th>
+                                                                    </thead>
+                                                                    <tbody :id="'historyTable'+(index+1)">
+
+
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                                <div  v-for="(historyImage,index) in historyImageList">
+                                                                    <input v-model="historyImageList" :value="index"/>
+                                                                </div>
+
+                                                            </div>
+
+
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td style="background: #c4c7d0">${historyQuery.type}</td>
+                                            <td style="background: #c4c7d0">${historyQuery.ptime}</td>
+                                            <td style="background: #c4c7d0">${historyQuery.ctime}</td>
+                                            <td style="background: #c4c7d0">${historyQuery.fps}</td>
+                                            <td style="background: #c4c7d0">${historyQuery.powerwaste}</td>
+                                            <!--                                            <td>${historyQuery.memusage}</td>
+                                            -->
+                                        </tr>
+                                        <tr v-else >
+                                            <td style="display: none" >
+                                                <a data-toggle="modal" @click="inferDetails(index+1,historyQuery.id)"  >${historyQuery.id}</a>
+
+                                            </td>
+                                            <td style="">
+
+                                                <a data-toggle="modal" @click="inferDetails(index+1,historyQuery.id)"  >${historyQuery.ip}</a>
+                                                <div   class="modal fade" :id="'myModal'+(index+1)">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+
+                                                            <!--<div class="modal-header">
+                                                                <h4 class="modal-title">详细历史记录</h4>
+                                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                            </div>-->
+
+                                                            <div class="modal-body">
+                                                                <h3>详细记录</h3>
+                                                                <table class="table table-striped table-bordered table-hover table-condensed">
+                                                                    <thead>
+                                                                    <th style="text-align: center;vertical-align: middle">序号</th>
+                                                                    <th style="text-align: center;vertical-align: middle">推理结果</th>
+                                                                    </thead>
+                                                                    <tbody :id="'historyTable'+(index+1)">
+
+
+                                                                    </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                                <div  v-for="(historyImage,index) in historyImageList">
+                                                                    <input v-model="historyImageList" :value="index"/>
+                                                                </div>
+
+                                                            </div>
+
+
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td style="">${historyQuery.type}</td>
+                                            <td style="">${historyQuery.ptime}</td>
+                                            <td style="">${historyQuery.ctime}</td>
+                                            <td style=" ">${historyQuery.fps}</td>
+                                            <td style=" ">${historyQuery.powerwaste}</td>
+                                            <!--                                            <td>${historyQuery.memusage}</td>
+                                            -->
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+</body>
+
+
+
+<script type="text/javascript">
+    new Vue({
+        delimiters: ['${', '}'],
+        el: '#panel1',
+        data: {
+            items: [],
+            historyList:[],
+            historyImageList:[],
+            algSelectedList:['Yolov3_satellite','Vgg16_ssd','Mobilenetv2_ssd','Yolov3'],
+            status: 'wait',
+            values:'请选择模型'
+        },
+        mounted() { //拉取初始化数据
+            axios({
+                method: 'post',
+                url: '/user/performanceOrigin'
+            }).then(response => (this.items = response.data)),
+            axios({
+                method: 'post',
+                url: '/user/historyOrigin'
+            }).then(response => (this.historyList = response.data,
+            console.log(this.historyList)))
+        },
+        methods: {
+            send() {
+                $("#myModal").modal({ backdrop: 'static', keyboard: false });
+
+                console.log(axios.post('/user/applyTest', {kindOfModel: this.values}, {emulateJSON: true}).then(
+                    function(response){
+                        this.items = response.data;
+                       // console.log(this.items);
+                        var strItems=JSON.stringify(this.items)
+                        var strItemsJson=JSON.parse(strItems)
+                       // console.log(strItemsJson.id)
+                        var htmlContent="";
+                        for(var historyImage in strItemsJson)
+                        {
+                            console.log(strItemsJson[historyImage].ip)
+                            if(typeof (strItemsJson[historyImage].powerwaste)=="undefined")
+                                strItemsJson[historyImage].powerwaste=""
+                            htmlContent=htmlContent+"<tr> " +
+                                "<td >" +strItemsJson[historyImage].id+"</td> " +
+                                "<td >" +strItemsJson[historyImage].ip+"</td> "+
+                                "<td >" +strItemsJson[historyImage].type+"</td> "+
+                                "<td >" +strItemsJson[historyImage].ptime+"</td> "+
+                                "<td >" +strItemsJson[historyImage].ctime+"</td> "+
+                                "<td >" +strItemsJson[historyImage].fps+"</td> "+
+                                "<td >" +strItemsJson[historyImage].powerwaste+"</td> "+
+                                "</tr>"
+                            //console.log(htmlContent)
+                        }
+                        console.log(htmlContent)
+                        document.getElementById("inferResultDetails").innerHTML=htmlContent.toString()
+                        //var htmlContent=""
+                        //console.log(historyImageJson[historyImage].id)
+                        //htmlContent=htmlContent+"<tr> <td style='text-align: center;vertical-align: middle'>" +historyImageJson[historyImage].id+"</td> <td align='center'><img height='150px' width='150px' src=' ./record/" +historyImageJson[historyImage].imageName+"' /> </td></tr>"
+                        //console.log(htmlContent)
+                        // console.log(this.items)
+                        if(this.items.name=="err")
+                            alert("error:推理出现错误！！！");
+                        this.status = 'ready';
+                        $("#myModal").modal('hide');
+                    }))
+
+            },
+            inferDetails(historyId,historyRealId){
+
+                axios.post('/user/historyMoreDetails',{historyDetails: historyRealId.toString()},{emulateJSON: true}).then(
+                    function (response) {
+                        this.historyImageList=response.data;
+
+                        console.log(this.historyImageList);
+                        console.log(JSON.stringify(this.historyImageList))
+                        var str=JSON.stringify(this.historyImageList)
+                        var historyImageJson=JSON.parse(str)
+
+                        //只能用js插入代码进行解决
+                        var htmlContent="";
+                        for(var historyImage in historyImageJson)
+                        {
+                            console.log("zhelishidayin")
+                            console.log(historyImage)
+                            console.log("zhelishiid")
+                            console.log(historyImageJson[historyImage].id)
+                            htmlContent=htmlContent+"<tr> <td style='text-align: center;vertical-align: middle'>" +historyImageJson[historyImage].id+"</td> <td align='center'><img height='150px' width='150px' src=' ./record/" +historyImageJson[historyImage].imageName+"' /> </td></tr>"
+                            console.log(htmlContent)
+                        }
+
+                        document.getElementById("historyTable"+historyId.toString()).innerHTML=htmlContent.toString()
+                        // $("#historyTable"+historyId.toString()).innerHTML=" <tr v-for='(index) in historyImageList'> <td>${ index }</td></tr>"
+
+                        $("#myModal"+historyId.toString()).modal("show");
+                    }
+                )
+            },
+
+            rereshHistory()
+            {
+                axios.post('/user/historyOrigin',{emulateJSON: true}).then(
+                    response => ( this.historyList=response.data,this.$forceUpdate())
+                    /* function (response) {
+                         const _this=this
+                        console.log("开始执行"+response.data);
+                        this.historyList="";
+                        console.log("zhehsi1"+this.historyList)
+                         _this.$forceUpdate()
+                     }*/
+                )
+            }
+        }
+    })
+
+</script>
+
+</html>

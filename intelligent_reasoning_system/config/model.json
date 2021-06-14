@@ -1,0 +1,29 @@
+{
+  "ModelAll" : [
+    {
+      "ModelName": "Yolov3_satellite",
+      "Port": "9091",
+      "Num": "1"
+    },
+    {
+      "ModelName": "Vgg16_ssd",
+      "Port": "9092",
+      "Num": "2"
+    },
+    {
+      "ModelName": "MobileNetv2_ssd",
+      "Port": "9093",
+      "Num": "3"
+    },
+    {
+      "ModelName": "Yolov3",
+      "Port": "9094",
+      "Num": "4"
+    },
+    {
+      "ModelName": "Yolov3-tx",
+      "Port": "9095",
+      "Num": "5"
+    }
+  ]
+}
